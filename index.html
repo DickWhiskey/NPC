@@ -6,94 +6,91 @@
     <title>RuneQuest NPC Generator</title>
     <style>
         body {
-            font-family: "Arial", sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #000;
             color: #fff;
             text-align: center;
-            margin: 0;
             padding: 1rem;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
         }
         .section {
             border: 1px solid #555;
             padding: 1rem;
-            margin: 1rem;
-            border-radius: 6px;
+            width: 300px;
             background-color: #111;
+            border-radius: 6px;
         }
-        h2 { font-size: 1.5rem; color: #FFD700; }
+        h2 { color: #FFD700; }
         input, button {
             padding: 0.5rem;
             font-size: 1rem;
             border-radius: 4px;
-            border: 1px solid #555;
             background-color: #222;
             color: #fff;
             margin-top: 0.3rem;
         }
         button:hover { background-color: #0078D7; }
+        .humanoid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        .body-part {
+            border: 1px solid #555;
+            padding: 10px;
+            background-color: #222;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
 
     <h2>🎲 RuneQuest NPC Generator</h2>
 
-    <div class="section">
-        <h3>Character Rating (CR) Overview</h3>
-        <p><strong>CR 0-2:</strong> Novice, commoner, weak combatant</p>
-        <p><strong>CR 3-5:</strong> Skilled warrior, professional guard, veteran adventurer</p>
-        <p><strong>CR 6-8:</strong> Elite fighter, experienced magician, feared champion</p>
-        <p><strong>CR 9-10:</strong> Legendary hero, Rune Lord, renowned war leader</p>
-    </div>
+    <div class="container">
+        <div class="section">
+            <h3>NPC Setup</h3>
+            <input type="number" id="totalHP" placeholder="Total HP">
+            <input type="text" id="weapon1" placeholder="Weapon 1">
+            <input type="number" id="weaponHP1" placeholder="Weapon 1 HP">
+            <input type="text" id="weapon2" placeholder="Weapon 2">
+            <input type="number" id="weaponHP2" placeholder="Weapon 2 HP">
+            <input type="text" id="shield" placeholder="Shield">
+            <input type="number" id="shieldHP" placeholder="Shield HP">
+            <button onclick="resetCombat()">Reset Combat</button>
+        </div>
 
-    <div class="section">
-        <h3>NPC Creation</h3>
-        <input type="number" id="crInput" placeholder="Character Rating (CR)" min="0" max="10">
-        <input type="text" id="weaponName1" placeholder="Weapon 1 Name">
-        <input type="text" id="weaponDamage1" placeholder="Weapon 1 Damage">
-        <input type="text" id="shieldName" placeholder="Shield Name">
-        <input type="number" id="shieldHP" placeholder="Shield HP">
-        <input type="text" id="spiritMagic" placeholder="Spirit Magic (3 spells)">
-        <input type="text" id="runeMagic" placeholder="Rune Magic (1 spell)">
-        <button onclick="generateNPC()">Generate NPC</button>
-        <p id="npcStats">📜 NPC details will appear here.</p>
-    </div>
+        <div class="section">
+            <h3>Combat Tracking</h3>
+            <button onclick="rollAttack('weapon1')">Attack with Weapon 1</button>
+            <button onclick="rollAttack('weapon2')">Attack with Weapon 2</button>
+            <button onclick="rollParry()">Parry with Shield</button>
+            <p id="combatResult">⚔️ Attack results will appear here.</p>
+            <p id="damageLog">📜 Damage log will appear here.</p>
+        </div>
 
-    <div class="section">
-        <h3>Combat Tracking</h3>
-        <button onclick="rollAttack()">Roll Attack</button>
-        <p id="combatResults">⚔️ Attack results will appear here.</p>
-        <h3>Hit Location</h3>
-        <p id="hitLocation">🩸 Location hit will be displayed here.</p>
-        <h3>Damage History</h3>
-        <p id="damageLog">📜 Previous hits will be logged here.</p>
+        <div class="section">
+            <h3>Humanoid Hit Location</h3>
+            <div class="humanoid">
+                <div class="body-part">Head HP: <input type="number" id="headHP" value="8"></div>
+                <div class="body-part">Right Arm HP: <input type="number" id="rightArmHP" value="6"></div>
+                <div class="body-part">Left Arm HP: <input type="number" id="leftArmHP" value="6"></div>
+                <div class="body-part">Chest HP: <input type="number" id="chestHP" value="10"></div>
+                <div class="body-part">Abdomen HP: <input type="number" id="abdomenHP" value="8"></div>
+                <div class="body-part">Right Leg HP: <input type="number" id="rightLegHP" value="6"></div>
+                <div class="body-part">Left Leg HP: <input type="number" id="leftLegHP" value="6"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        function generateNPC() {
-            let cr = parseInt(document.getElementById("crInput").value);
-            let weapon1 = document.getElementById("weaponName1").value + " (" + document.getElementById("weaponDamage1").value + ")";
-            let shield = document.getElementById("shieldName").value + " (HP: " + document.getElementById("shieldHP").value + ")";
-            let spiritMagic = document.getElementById("spiritMagic").value;
-            let runeMagic = document.getElementById("runeMagic").value;
-
-            let totalHP = 10 + cr;
-            let magicPoints = totalHP; // POW = Magic Points
-
-            let armorChest = Math.round(6 * 1.0);
-            let armorHead = Math.round(armorChest * 0.8);
-            let armorAbdomen = Math.round(armorChest * 0.8);
-            let armorArms = Math.round(armorChest * 0.6);
-            let armorLegs = Math.round(armorChest * 0.7);
-
-            document.getElementById("npcStats").innerHTML = `
-                🛡️ CR: ${cr} | HP: ${totalHP} | Magic Points: ${magicPoints} <br>
-                ⚔️ Weapon: ${weapon1} | Shield: ${shield} <br>
-                ✨ Spirit Magic: ${spiritMagic} | Rune Magic: ${runeMagic} <br>
-                🏰 Armor: Head (${armorHead}), Chest (${armorChest}), Abdomen (${armorAbdomen}), Arms (${armorArms}), Legs (${armorLegs})
-            `;
-        }
-
-        function rollAttack() {
+        function rollAttack(weapon) {
             let roll = Math.floor(Math.random() * 100) + 1;
             let result = "Miss";
             if (roll <= 5) result = "Fumble!";
@@ -102,12 +99,36 @@
             else if (roll <= 90) result = "Special Success!";
             else result = "Critical Hit!";
             
-            let hitLocations = ["Head", "Chest", "Abdomen", "Right Arm", "Left Arm", "Right Leg", "Left Leg"];
+            let hitLocations = ["Head", "Right Arm", "Left Arm", "Chest", "Abdomen", "Right Leg", "Left Leg"];
             let hitLocation = hitLocations[Math.floor(Math.random() * hitLocations.length)];
             
-            document.getElementById("combatResults").innerHTML = `⚔️ Attack Roll: ${roll} → ${result}`;
-            document.getElementById("hitLocation").innerHTML = `🩸 Hit Location: ${hitLocation}`;
-            document.getElementById("damageLog").innerHTML += `<br>✅ ${result} → ${hitLocation}`;
+            if (result !== "Miss" && result !== "Failure") {
+                document.getElementById("combatResult").innerHTML = `⚔️ ${weapon} Attack Roll: ${roll} → ${result} (Hits ${hitLocation})`;
+                document.getElementById("damageLog").innerHTML += `<br>✅ ${result} → ${hitLocation}`;
+                reduceHP(hitLocation);
+            } else {
+                document.getElementById("combatResult").innerHTML = `⚔️ ${weapon} Attack Roll: ${roll} → ${result} (No damage)`;
+            }
+        }
+
+        function rollParry() {
+            let roll = Math.floor(Math.random() * 100) + 1;
+            let result = roll <= 50 ? "Successful Parry!" : "Failed Parry!";
+            document.getElementById("combatResult").innerHTML = `🛡️ Shield Parry Roll: ${roll} → ${result}`;
+        }
+
+        function reduceHP(location) {
+            let locationID = location.toLowerCase().replace(" ", "") + "HP";
+            let currentHP = parseInt(document.getElementById(locationID).value);
+            document.getElementById(locationID).value = Math.max(0, currentHP - 3);
+            
+            let totalHP = parseInt(document.getElementById("totalHP").value);
+            document.getElementById("totalHP").value = Math.max(0, totalHP - 3);
+        }
+
+        function resetCombat() {
+            document.getElementById("combatResult").innerHTML = "⚔️ Attack results will appear here.";
+            document.getElementById("damageLog").innerHTML = "📜 Damage log will appear here.";
         }
     </script>
 
