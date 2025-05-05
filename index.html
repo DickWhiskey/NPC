@@ -3,80 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuneQuest NPC Generator</title>
+    <title>Enhanced RuneQuest NPC Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
+            background-color: #181818;
+            color: #eee;
             text-align: center;
             padding: 1rem;
         }
         .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 1rem;
+            background-color: #222;
+            border-radius: 8px;
         }
         .section {
-            border: 1px solid #555;
-            padding: 1rem;
-            width: 300px;
-            background-color: #111;
+            padding: 1.5rem;
+            background-color: #333;
             border-radius: 6px;
+            border: 1px solid #555;
+            text-align: left;
         }
-        h2 { color: #FFD700; }
-        input, button {
-            padding: 0.5rem;
+        h2, h3 { color: #FFD700; text-align: center; }
+        label { display: block; margin-top: 0.5rem; color: #ccc; }
+        input[type="number"], input[type="text"] {
+            width: calc(100% - 12px);
+            padding: 0.6rem;
             font-size: 1rem;
             border-radius: 4px;
-            background-color: #222;
-            color: #fff;
+            background-color: #444;
+            color: #eee;
+            border: 1px solid #666;
             margin-top: 0.3rem;
         }
-        button:hover { background-color: #0078D7; }
+        button {
+            padding: 0.7rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            background-color: #555;
+            color: #eee;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        button:hover { background-color: #007bff; }
         .humanoid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 0.5rem;
             text-align: center;
+            margin-top: 1rem;
         }
         .body-part {
-            border: 1px solid #555;
-            padding: 10px;
-            background-color: #222;
+            padding: 0.8rem;
+            background-color: #444;
+            border-radius: 4px;
+            border: 1px solid #666;
+        }
+        .combat-log {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #333;
             border-radius: 6px;
+            border: 1px solid #555;
+            color: #eee;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+        .status-effects {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+        .status-effects button {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            margin-top: 0;
         }
     </style>
 </head>
 <body>
 
-    <h2>🎲 RuneQuest NPC Generator</h2>
+    <h2>🛡️ Enhanced RuneQuest NPC Generator ⚔️</h2>
 
     <div class="container">
         <div class="section">
-            <h3>NPC Setup</h3>
-            <input type="number" id="totalHP" placeholder="Total HP">
-            <input type="text" id="weapon1" placeholder="Weapon 1">
-            <input type="number" id="weaponHP1" placeholder="Weapon 1 HP">
-            <input type="text" id="weapon2" placeholder="Weapon 2">
-            <input type="number" id="weaponHP2" placeholder="Weapon 2 HP">
-            <input type="text" id="shield" placeholder="Shield">
-            <input type="number" id="shieldHP" placeholder="Shield HP">
-            <button onclick="resetCombat()">Reset Combat</button>
+            <h3>NPC Details</h3>
+            <label for="npcName">Name:</label>
+            <input type="text" id="npcName" placeholder="NPC Name">
+            <label for="culture">Culture:</label>
+            <input type="text" id="culture" placeholder="Culture">
+            <label for="motivation">Motivation:</label>
+            <input type="text" id="motivation" placeholder="Motivation">
+            <label for="totalHP">Total HP:</label>
+            <input type="number" id="totalHP" value="20">
         </div>
 
         <div class="section">
-            <h3>Combat Tracking</h3>
-            <button onclick="rollAttack('weapon1')">Attack with Weapon 1</button>
-            <button onclick="rollAttack('weapon2')">Attack with Weapon 2</button>
-            <button onclick="rollParry()">Parry with Shield</button>
-            <p id="combatResult">⚔️ Attack results will appear here.</p>
-            <p id="damageLog">📜 Damage log will appear here.</p>
+            <h3>Weapons & Shield</h3>
+            <div>
+                <label for="weapon1">Weapon 1:</label>
+                <input type="text" id="weapon1" placeholder="Weapon Name">
+                <label for="weapon1Damage">Weapon 1 Damage (e.g., 1D6+1):</label>
+                <input type="text" id="weapon1Damage" placeholder="Damage Roll">
+                <label for="weapon1Skill">Weapon 1 Skill (%):</label>
+                <input type="number" id="weapon1Skill" placeholder="Skill %">
+            </div>
+            <div>
+                <label for="weapon2">Weapon 2:</label>
+                <input type="text" id="weapon2" placeholder="Weapon Name">
+                <label for="weapon2Damage">Weapon 2 Damage (e.g., 1D8):</label>
+                <input type="text" id="weapon2Damage" placeholder="Damage Roll">
+                <label for="weapon2Skill">Weapon 2 Skill (%):</label>
+                <input type="number" id="weapon2Skill" placeholder="Skill %">
+            </div>
+            <div>
+                <label for="shield">Shield:</label>
+                <input type="text" id="shield" placeholder="Shield Name">
+                <label for="shieldParry">Parry Skill (%):</label>
+                <input type="number" id="shieldParry" placeholder="Parry %">
+                <label for="shieldHP">Shield HP:</label>
+                <input type="number" id="shieldHP" value="10">
+            </div>
         </div>
 
         <div class="section">
-            <h3>Humanoid Hit Location</h3>
+            <h3>Combat Actions</h3>
+            <button onclick="attack('weapon1')">Attack with Weapon 1</button>
+            <button onclick="attack('weapon2')">Attack with Weapon 2</button>
+            <button onclick="parry()">Parry with Shield</button>
+            <button onclick="dodge()">Dodge</button>
+            <div class="status-effects">
+                <button onclick="applyStatus('prone')">Prone</button>
+                <button onclick="applyStatus('unconscious')">Unconscious</button>
+                <button onclick="applyStatus('severelyWounded')">Severely Wounded</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Humanoid Hit Location & HP</h3>
             <div class="humanoid">
                 <div class="body-part">Head HP: <input type="number" id="headHP" value="8"></div>
                 <div class="body-part">Right Arm HP: <input type="number" id="rightArmHP" value="6"></div>
@@ -87,48 +159,113 @@
                 <div class="body-part">Left Leg HP: <input type="number" id="leftLegHP" value="6"></div>
             </div>
         </div>
+
+        <div class="section">
+            <h3>Combat Log</h3>
+            <div id="combatLog" class="combat-log">Combat events will appear here...</div>
+            <button onclick="resetCombat()">Reset Combat</button>
+        </div>
     </div>
 
     <script>
-        function rollAttack(weapon) {
-            let roll = Math.floor(Math.random() * 100) + 1;
+        let combatLog = document.getElementById("combatLog");
+
+        function logMessage(message) {
+            combatLog.innerHTML += message + "\n";
+            combatLog.scrollTop = combatLog.scrollHeight; // Auto-scroll to bottom
+        }
+
+        function rollD(sides) {
+            return Math.floor(Math.random() * sides) + 1;
+        }
+
+        function rollPercent() {
+            return Math.floor(Math.random() * 100) + 1;
+        }
+
+        function attack(weaponId) {
+            let weaponName = document.getElementById(weaponId).value;
+            let skill = parseInt(document.getElementById(weaponId + "Skill").value) || 0;
+            let damageRoll = document.getElementById(weaponId + "Damage").value || "1D3"; // Default damage
+
+            let roll = rollPercent();
             let result = "Miss";
+
             if (roll <= 5) result = "Fumble!";
-            else if (roll <= 25) result = "Failure";
-            else if (roll <= 75) result = "Success";
-            else if (roll <= 90) result = "Special Success!";
-            else result = "Critical Hit!";
-            
-            let hitLocations = ["Head", "Right Arm", "Left Arm", "Chest", "Abdomen", "Right Leg", "Left Leg"];
-            let hitLocation = hitLocations[Math.floor(Math.random() * hitLocations.length)];
-            
-            if (result !== "Miss" && result !== "Failure") {
-                document.getElementById("combatResult").innerHTML = `⚔️ ${weapon} Attack Roll: ${roll} → ${result} (Hits ${hitLocation})`;
-                document.getElementById("damageLog").innerHTML += `<br>✅ ${result} → ${hitLocation}`;
-                reduceHP(hitLocation);
-            } else {
-                document.getElementById("combatResult").innerHTML = `⚔️ ${weapon} Attack Roll: ${roll} → ${result} (No damage)`;
+            else if (roll <= skill / 5) result = "Critical Hit!";
+            else if (roll <= skill / 2) result = "Special Success!";
+            else if (roll <= skill) result = "Success";
+            else if (roll <= 95) result = "Failure";
+            else result = "Critical Failure!";
+
+            logMessage(`⚔️ ${weaponName} Attack Roll: ${roll}% vs Skill ${skill}% → ${result}`);
+
+            if (result === "Success" || result.includes("Success!")) {
+                let hitLocations = ["Head", "Right Arm", "Left Arm", "Chest", "Abdomen", "Right Leg", "Left Leg"];
+                let hitLocation = hitLocations[Math.floor(Math.random() * hitLocations.length)];
+                logMessage(`   Hit Location: ${hitLocation}`);
+                applyDamage(damageRoll, hitLocation);
             }
         }
 
-        function rollParry() {
-            let roll = Math.floor(Math.random() * 100) + 1;
-            let result = roll <= 50 ? "Successful Parry!" : "Failed Parry!";
-            document.getElementById("combatResult").innerHTML = `🛡️ Shield Parry Roll: ${roll} → ${result}`;
+        function parry() {
+            let shieldSkill = parseInt(document.getElementById("shieldParry").value) || 0;
+            let roll = rollPercent();
+            let result = roll <= shieldSkill ? "Successful Parry!" : "Failed Parry!";
+            logMessage(`🛡️ Parry Roll: ${roll}% vs Skill ${shieldSkill}% → ${result}`);
         }
 
-        function reduceHP(location) {
+        function dodge() {
+            let dodgeSkill = 30; // Assuming a base dodge skill
+            let roll = rollPercent();
+            let result = roll <= dodgeSkill ? "Successful Dodge!" : "Failed Dodge!";
+            logMessage(`🤸 Dodge Roll: ${roll}% vs Skill ${dodgeSkill}% → ${result}`);
+        }
+
+        function applyDamage(damageString, location) {
+            let totalDamage = 0;
+            const diceRegex = /(\d+)D(\d+)([+-]\d+)?/i;
+            let match;
+
+            while ((match = diceRegex.exec(damageString)) !== null) {
+                let numDice = parseInt(match[1]);
+                let numSides = parseInt(match[2]);
+                let modifier = parseInt(match[3]) || 0;
+
+                for (let i = 0; i < numDice; i++) {
+                    totalDamage += rollD(numSides);
+                }
+                totalDamage += modifier;
+                damageString = damageString.substring(match.index + match[0].length); // Move past the matched part
+            }
+
+            totalDamage = Math.max(0, totalDamage); // Ensure damage isn't negative
             let locationID = location.toLowerCase().replace(" ", "") + "HP";
             let currentHP = parseInt(document.getElementById(locationID).value);
-            document.getElementById(locationID).value = Math.max(0, currentHP - 3);
-            
+            let newHP = Math.max(0, currentHP - totalDamage);
+            document.getElementById(locationID).value = newHP;
+            logMessage(`   Damage to ${location}: ${totalDamage} (New HP: ${newHP})`);
+
             let totalHP = parseInt(document.getElementById("totalHP").value);
-            document.getElementById("totalHP").value = Math.max(0, totalHP - 3);
+            document.getElementById("totalHP").value = Math.max(0, totalHP - totalDamage);
         }
 
         function resetCombat() {
-            document.getElementById("combatResult").innerHTML = "⚔️ Attack results will appear here.";
-            document.getElementById("damageLog").innerHTML = "📜 Damage log will appear here.";
+            combatLog.innerHTML = "Combat events will appear here...\n";
+            // Optionally reset HP values if needed
+            document.getElementById("totalHP").value = 20;
+            document.getElementById("headHP").value = 8;
+            document.getElementById("rightArmHP").value = 6;
+            document.getElementById("leftArmHP").value = 6;
+            document.getElementById("chestHP").value = 10;
+            document.getElementById("abdomenHP").value = 8;
+            document.getElementById("rightLegHP").value = 6;
+            document.getElementById("leftLegHP").value = 6;
+        }
+
+        function applyStatus(status) {
+            logMessage(`⚠️ Applied Status Effect: ${status}`);
+            // You could add visual indicators or track status effects more formally here
         }
     </script>
 
