@@ -13,150 +13,101 @@
             margin: 0;
             padding: 1rem;
         }
-        h2 {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+        .section {
+            border: 1px solid #555;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 6px;
+            background-color: #111;
         }
-        h3 {
-            font-size: 1.2rem;
-            margin: 0.8rem 0 0.5rem;
-        }
-        p {
-            margin: 0.2rem 0 0.6rem;
+        h2 { font-size: 1.5rem; color: #FFD700; }
+        input, button {
+            padding: 0.5rem;
             font-size: 1rem;
-        }
-        .input-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 0.4rem;
-        }
-        input {
-            width: 110px;
-            padding: 0.3rem;
-            font-size: 0.9rem;
-            text-align: center;
             border-radius: 4px;
             border: 1px solid #555;
-            background-color: #111;
+            background-color: #222;
             color: #fff;
-        }
-        button {
-            padding: 0.5rem 1.2rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            background-color: #0078D7;
-            color: white;
-        }
-        button:hover {
-            background-color: #005fa3;
-        }
-        #npcStats, #combatTracking {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #FFD700;
             margin-top: 0.3rem;
         }
+        button:hover { background-color: #0078D7; }
     </style>
 </head>
 <body>
 
     <h2>🎲 RuneQuest NPC Generator</h2>
 
-    <h3>Character Rating (CR) Overview</h3>
-    <p><strong>CR 0-2:</strong> Novice, commoner, weak combatant</p>
-    <p><strong>CR 3-5:</strong> Skilled warrior, professional guard, veteran adventurer</p>
-    <p><strong>CR 6-8:</strong> Elite fighter, experienced magician, feared champion</p>
-    <p><strong>CR 9-10:</strong> Legendary hero, Rune Lord, renowned war leader</p>
-
-    <h3>NPC Creation</h3>
-    <div class="input-container">
-        <div>
-            <p>Character Rating (CR):</p>
-            <input type="number" id="crInput" min="0" max="10" value="4">
-        </div>
-        <div>
-            <p>Weapon Damage:</p>
-            <input type="text" id="weaponInput" placeholder="e.g. 1d8+1">
-        </div>
-        <div>
-            <p>Armor Value:</p>
-            <input type="number" id="armorInput" min="0" value="3">
-        </div>
+    <div class="section">
+        <h3>Character Rating (CR) Overview</h3>
+        <p><strong>CR 0-2:</strong> Novice, commoner, weak combatant</p>
+        <p><strong>CR 3-5:</strong> Skilled warrior, professional guard, veteran adventurer</p>
+        <p><strong>CR 6-8:</strong> Elite fighter, experienced magician, feared champion</p>
+        <p><strong>CR 9-10:</strong> Legendary hero, Rune Lord, renowned war leader</p>
     </div>
-    
-    <h3>Magic Input</h3>
-    <p>Spirit Magic (Enter 3 spells):</p>
-    <input type="text" id="spiritMagicInput" placeholder="e.g. Bladesharp, Heal, Dispel">
-    <p>Rune Magic (Enter 1 spell):</p>
-    <input type="text" id="runeMagicInput" placeholder="e.g. Shield">
-    
-    <br><br>
-    <button onclick="generateNPC()">Generate NPC</button>
-    <p id="npcStats">📜 NPC details will appear here.</p>
 
-    <h3>Combat Tracking</h3>
-    <div class="input-container">
-        <div>
-            <p>Apply Damage:</p>
-            <input type="number" id="damageInput" min="0" value="0">
-        </div>
-        <div>
-            <p>Magic Points Used:</p>
-            <input type="number" id="magicUsedInput" min="0" value="0">
-        </div>
-        <div>
-            <p>Weapon Durability Lost:</p>
-            <input type="number" id="weaponDurabilityInput" min="0" value="0">
-        </div>
+    <div class="section">
+        <h3>NPC Creation</h3>
+        <input type="number" id="crInput" placeholder="Character Rating (CR)" min="0" max="10">
+        <input type="text" id="weaponName1" placeholder="Weapon 1 Name">
+        <input type="text" id="weaponDamage1" placeholder="Weapon 1 Damage">
+        <input type="text" id="shieldName" placeholder="Shield Name">
+        <input type="number" id="shieldHP" placeholder="Shield HP">
+        <input type="text" id="spiritMagic" placeholder="Spirit Magic (3 spells)">
+        <input type="text" id="runeMagic" placeholder="Rune Magic (1 spell)">
+        <button onclick="generateNPC()">Generate NPC</button>
+        <p id="npcStats">📜 NPC details will appear here.</p>
     </div>
-    <br><br>
-    <button onclick="updateCombat()">Update Status</button>
-    <p id="combatTracking">⚔️ Combat updates will appear here.</p>
+
+    <div class="section">
+        <h3>Combat Tracking</h3>
+        <button onclick="rollAttack()">Roll Attack</button>
+        <p id="combatResults">⚔️ Attack results will appear here.</p>
+        <h3>Hit Location</h3>
+        <p id="hitLocation">🩸 Location hit will be displayed here.</p>
+        <h3>Damage History</h3>
+        <p id="damageLog">📜 Previous hits will be logged here.</p>
+    </div>
 
     <script>
         function generateNPC() {
             let cr = parseInt(document.getElementById("crInput").value);
-            let weapon = document.getElementById("weaponInput").value;
-            let armor = parseInt(document.getElementById("armorInput").value);
-            let spiritMagic = document.getElementById("spiritMagicInput").value;
-            let runeMagic = document.getElementById("runeMagicInput").value;
+            let weapon1 = document.getElementById("weaponName1").value + " (" + document.getElementById("weaponDamage1").value + ")";
+            let shield = document.getElementById("shieldName").value + " (HP: " + document.getElementById("shieldHP").value + ")";
+            let spiritMagic = document.getElementById("spiritMagic").value;
+            let runeMagic = document.getElementById("runeMagic").value;
 
-            let characteristics = 10 + cr;
             let totalHP = 10 + cr;
-            let strikeRank = Math.max(1, 5 - Math.floor(cr / 2));
-            let damageBonus = cr <= 5 ? "1D4" : "1D6";
-            let skillPercent = 20 + (cr * 10);
-            let magicPoints = characteristics; 
+            let magicPoints = totalHP; // POW = Magic Points
 
-            let hpLocations = {
-                Chest: Math.ceil(totalHP / 3) + 1,
-                Arms: Math.ceil(totalHP / 3) - 1,
-                Other: Math.ceil(totalHP / 3)
-            };
+            let armorChest = Math.round(6 * 1.0);
+            let armorHead = Math.round(armorChest * 0.8);
+            let armorAbdomen = Math.round(armorChest * 0.8);
+            let armorArms = Math.round(armorChest * 0.6);
+            let armorLegs = Math.round(armorChest * 0.7);
 
             document.getElementById("npcStats").innerHTML = `
-                🛡️ CR: ${cr} | Characteristics: ${characteristics} | HP: ${totalHP} <br>
-                🔥 Strike Rank: ${strikeRank} | Damage Bonus: ${damageBonus} | Skills: ${skillPercent}% <br>
-                ✨ Magic Points: ${magicPoints} | Spirit Magic: ${spiritMagic} | Rune Magic: ${runeMagic} <br>
-                ⚔️ Weapon: ${weapon} | Armor: ${armor} <br>
-                💥 HP Locations: Chest (${hpLocations.Chest}), Arms (${hpLocations.Arms}), Other (${hpLocations.Other})
+                🛡️ CR: ${cr} | HP: ${totalHP} | Magic Points: ${magicPoints} <br>
+                ⚔️ Weapon: ${weapon1} | Shield: ${shield} <br>
+                ✨ Spirit Magic: ${spiritMagic} | Rune Magic: ${runeMagic} <br>
+                🏰 Armor: Head (${armorHead}), Chest (${armorChest}), Abdomen (${armorAbdomen}), Arms (${armorArms}), Legs (${armorLegs})
             `;
         }
 
-        function updateCombat() {
-            let damage = parseInt(document.getElementById("damageInput").value);
-            let magicUsed = parseInt(document.getElementById("magicUsedInput").value);
-            let weaponLost = parseInt(document.getElementById("weaponDurabilityInput").value);
-
-            document.getElementById("combatTracking").innerHTML = `
-                ⚔️ Damage Taken: -${damage} HP <br>
-                🔮 Magic Points Used: -${magicUsed} <br>
-                🛠️ Weapon Durability Lost: -${weaponLost}
-            `;
+        function rollAttack() {
+            let roll = Math.floor(Math.random() * 100) + 1;
+            let result = "Miss";
+            if (roll <= 5) result = "Fumble!";
+            else if (roll <= 25) result = "Failure";
+            else if (roll <= 75) result = "Success";
+            else if (roll <= 90) result = "Special Success!";
+            else result = "Critical Hit!";
+            
+            let hitLocations = ["Head", "Chest", "Abdomen", "Right Arm", "Left Arm", "Right Leg", "Left Leg"];
+            let hitLocation = hitLocations[Math.floor(Math.random() * hitLocations.length)];
+            
+            document.getElementById("combatResults").innerHTML = `⚔️ Attack Roll: ${roll} → ${result}`;
+            document.getElementById("hitLocation").innerHTML = `🩸 Hit Location: ${hitLocation}`;
+            document.getElementById("damageLog").innerHTML += `<br>✅ ${result} → ${hitLocation}`;
         }
     </script>
 
