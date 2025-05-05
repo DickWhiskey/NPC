@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced RuneQuest NPC Generator</title>
+    <title>RuneQuest NPC Generator with Character Rating</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -87,23 +87,41 @@
             font-size: 0.8rem;
             margin-top: 0;
         }
+        .stat-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #444;
+            border-radius: 4px;
+            border: 1px solid #666;
+            color: #eee;
+            text-align: center;
+        }
+        .stat-display p { margin: 0.3rem 0; }
     </style>
 </head>
 <body>
 
-    <h2>🛡️ Enhanced RuneQuest NPC Generator ⚔️</h2>
+    <h2>✨ RuneQuest NPC Generator with Rating ✨</h2>
 
     <div class="container">
         <div class="section">
-            <h3>NPC Details</h3>
+            <h3>NPC Setup</h3>
             <label for="npcName">Name:</label>
             <input type="text" id="npcName" placeholder="NPC Name">
             <label for="culture">Culture:</label>
             <input type="text" id="culture" placeholder="Culture">
             <label for="motivation">Motivation:</label>
             <input type="text" id="motivation" placeholder="Motivation">
-            <label for="totalHP">Total HP:</label>
-            <input type="number" id="totalHP" value="20">
+            <label for="characterRating">Character Rating:</label>
+            <input type="number" id="characterRating" value="1" min="1">
+            <button onclick="generateStats()">Generate Stats</button>
+            <div id="statDisplay" class="stat-display">
+                <h3>Stats</h3>
+                <p>Strength: <span id="strength">--</span></p>
+                <p>Dexterity: <span id="dexterity">--</span></p>
+                <p>Constitution: <span id="constitution">--</span></p>
+                <p>Total HP: <span id="totalHP">--</span></p>
+            </div>
         </div>
 
         <div class="section">
@@ -150,13 +168,13 @@
         <div class="section">
             <h3>Humanoid Hit Location & HP</h3>
             <div class="humanoid">
-                <div class="body-part">Head HP: <input type="number" id="headHP" value="8"></div>
-                <div class="body-part">Right Arm HP: <input type="number" id="rightArmHP" value="6"></div>
-                <div class="body-part">Left Arm HP: <input type="number" id="leftArmHP" value="6"></div>
-                <div class="body-part">Chest HP: <input type="number" id="chestHP" value="10"></div>
-                <div class="body-part">Abdomen HP: <input type="number" id="abdomenHP" value="8"></div>
-                <div class="body-part">Right Leg HP: <input type="number" id="rightLegHP" value="6"></div>
-                <div class="body-part">Left Leg HP: <input type="number" id="leftLegHP" value="6"></div>
+                <div class="body-part">Head HP: <input type="number" id="headHP" value="8" readonly></div>
+                <div class="body-part">Right Arm HP: <input type="number" id="rightArmHP" value="6" readonly></div>
+                <div class="body-part">Left Arm HP: <input type="number" id="leftArmHP" value="6" readonly></div>
+                <div class="body-part">Chest HP: <input type="number" id="chestHP" value="10" readonly></div>
+                <div class="body-part">Abdomen HP: <input type="number" id="abdomenHP" value="8" readonly></div>
+                <div class="body-part">Right Leg HP: <input type="number" id="rightLegHP" value="6" readonly></div>
+                <div class="body-part">Left Leg HP: <input type="number" id="leftLegHP" value="6" readonly></div>
             </div>
         </div>
 
@@ -169,10 +187,12 @@
 
     <script>
         let combatLog = document.getElementById("combatLog");
+        const baseHPPerRating = 5; // You can adjust this
+        const statBonusPerRating = 2; // Adjust this as well
 
         function logMessage(message) {
             combatLog.innerHTML += message + "\n";
-            combatLog.scrollTop = combatLog.scrollHeight; // Auto-scroll to bottom
+            combatLog.scrollTop = combatLog.scrollHeight;
         }
 
         function rollD(sides) {
@@ -183,10 +203,33 @@
             return Math.floor(Math.random() * 100) + 1;
         }
 
+        function generateStats() {
+            const rating = parseInt(document.getElementById("characterRating").value) || 1;
+            const baseStrength = 8 + (rating * statBonusPerRating); // Example formula
+            const baseDexterity = 9 + (rating * statBonusPerRating); // Example formula
+            const baseConstitution = 10 + (rating * statBonusPerRating); // Example formula
+            const totalHP = baseHPPerRating * rating;
+
+            document.getElementById("strength").textContent = baseStrength;
+            document.getElementById("dexterity").textContent = baseDexterity;
+            document.getElementById("constitution").textContent = baseConstitution;
+            document.getElementById("totalHP").textContent = totalHP;
+
+            // Distribute HP to hit locations (simplified distribution)
+            const limbHP = Math.floor(totalHP / 8);
+            document.getElementById("headHP").value = Math.max(1, limbHP + Math.floor(totalHP * 0.1));
+            document.getElementById("rightArmHP").value = Math.max(1, limbHP);
+            document.getElementById("leftArmHP").value = Math.max(1, limbHP);
+            document.getElementById("chestHP").value = Math.max(1, limbHP + Math.floor(totalHP * 0.2));
+            document.getElementById("abdomenHP").value = Math.max(1, limbHP + Math.floor(totalHP * 0.15));
+            document.getElementById("rightLegHP").value = Math.max(1, limbHP);
+            document.getElementById("leftLegHP").value = Math.max(1, limbHP);
+        }
+
         function attack(weaponId) {
             let weaponName = document.getElementById(weaponId).value;
             let skill = parseInt(document.getElementById(weaponId + "Skill").value) || 0;
-            let damageRoll = document.getElementById(weaponId + "Damage").value || "1D3"; // Default damage
+            let damageRoll = document.getElementById(weaponId + "Damage").value || "1D3";
 
             let roll = rollPercent();
             let result = "Miss";
@@ -216,7 +259,8 @@
         }
 
         function dodge() {
-            let dodgeSkill = 30; // Assuming a base dodge skill
+            let dexterity = parseInt(document.getElementById("dexterity").textContent) || 9;
+            let dodgeSkill = dexterity * 2; // Example: Dodge is twice Dexterity
             let roll = rollPercent();
             let result = roll <= dodgeSkill ? "Successful Dodge!" : "Failed Dodge!";
             logMessage(`🤸 Dodge Roll: ${roll}% vs Skill ${dodgeSkill}% → ${result}`);
@@ -236,37 +280,31 @@
                     totalDamage += rollD(numSides);
                 }
                 totalDamage += modifier;
-                damageString = damageString.substring(match.index + match[0].length); // Move past the matched part
+                damageString = damageString.substring(match.index + match[0].length);
             }
 
-            totalDamage = Math.max(0, totalDamage); // Ensure damage isn't negative
+            totalDamage = Math.max(0, totalDamage);
             let locationID = location.toLowerCase().replace(" ", "") + "HP";
             let currentHP = parseInt(document.getElementById(locationID).value);
             let newHP = Math.max(0, currentHP - totalDamage);
             document.getElementById(locationID).value = newHP;
             logMessage(`   Damage to ${location}: ${totalDamage} (New HP: ${newHP})`);
 
-            let totalHP = parseInt(document.getElementById("totalHP").value);
-            document.getElementById("totalHP").value = Math.max(0, totalHP - totalDamage);
+            const currentTotalHP = parseInt(document.getElementById("totalHP").textContent);
+            document.getElementById("totalHP").textContent = Math.max(0, currentTotalHP - totalDamage);
         }
 
         function resetCombat() {
             combatLog.innerHTML = "Combat events will appear here...\n";
-            // Optionally reset HP values if needed
-            document.getElementById("totalHP").value = 20;
-            document.getElementById("headHP").value = 8;
-            document.getElementById("rightArmHP").value = 6;
-            document.getElementById("leftArmHP").value = 6;
-            document.getElementById("chestHP").value = 10;
-            document.getElementById("abdomenHP").value = 8;
-            document.getElementById("rightLegHP").value = 6;
-            document.getElementById("leftLegHP").value = 6;
+            generateStats(); // Regenerate stats on reset
         }
 
         function applyStatus(status) {
             logMessage(`⚠️ Applied Status Effect: ${status}`);
-            // You could add visual indicators or track status effects more formally here
         }
+
+        // Initial stats generation on page load (optional)
+        generateStats();
     </script>
 
 </body>
