@@ -14,9 +14,9 @@
         table { width: 100%; border-collapse: collapse; font-size: 12px; }
         th, td { padding: 4px; text-align: center; border-bottom: 1px solid #666; }
         th { background-color: #444; }
-        input { width: 40px; padding: 3px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
+        input { width: 80px; padding: 3px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
         .npc-name { width: 90%; padding: 4px; background-color: #444; color: white; border: 2px solid #999; text-align: center; margin-bottom: 3px; }
-        .status { width: 100%; padding: 3px; background-color: #555; color: white; border: 1px solid #777; text-align: center; margin-top: 3px; }
+        .status, .weapon-name, .weapon-hp, .shield-name, .shield-hp { width: 48%; padding: 3px; background-color: #555; color: white; border: 1px solid #777; text-align: center; display: inline-block; margin-top: 3px; }
         .duplicate-btn { margin-top: 5px; padding: 6px 12px; background-color: #888; color: black; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
@@ -24,7 +24,6 @@
     <h2>RuneQuest NPC Combat Tracker</h2>
     
     <div class="tracker-container">
-        <!-- Main Opponent Section -->
         <div class="tracker">
             <input type="text" class="npc-name" placeholder="Main Opponent Name" id="mainOpponent">
             <label for="mainTotalHP"><strong>Total HP:</strong></label>
@@ -49,27 +48,24 @@
                     <tr><td>Head</td><td>19-20</td><td><input type="text" id="mainHeadTotal" readonly></td><td><input type="number"></td></tr>
                 </tbody>
             </table>
+            <input type="text" class="weapon-name" placeholder="Weapon 1 Name">
+            <input type="number" class="weapon-hp" placeholder="Weapon 1 HP">
+            <input type="text" class="weapon-name" placeholder="Weapon 2 Name">
+            <input type="number" class="weapon-hp" placeholder="Weapon 2 HP">
+            <input type="text" class="shield-name" placeholder="Shield Name & Size">
+            <input type="number" class="shield-hp" placeholder="Shield HP">
             <input type="text" class="status" placeholder="Status (e.g., Injured, Severed)">
         </div>
-    
+
         <h3>Henchmen</h3>
         <button class="duplicate-btn" onclick="duplicateHenchman()">Add Henchman</button>
         <div class="henchmen-container" id="henchmenContainer"></div>
     </div>
 
     <script>
-        function lookupHP(totalHP) {
-            if (totalHP <= 6) return [2, 3, 2, 1, 1, 2, 2];
-            else if (totalHP <= 9) return [3, 4, 3, 2, 2, 3, 3];
-            else if (totalHP <= 12) return [4, 5, 4, 3, 3, 4, 4];
-            else if (totalHP <= 15) return [5, 6, 5, 4, 4, 5, 5];
-            else if (totalHP <= 18) return [6, 7, 6, 5, 5, 6, 6];
-            else return [7, 8, 7, 6, 6, 7, 7];
-        }
-
         function calculateHitLocations(id) {
             let totalHP = parseInt(document.getElementById(`${id}TotalHP`).value);
-            let [rightLeg, leftLeg, abdomen, chest, rightArm, leftArm, head] = lookupHP(totalHP);
+            let [rightLeg, leftLeg, abdomen, chest, rightArm, leftArm, head] = [Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.3), Math.floor(totalHP * 0.3), Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.2)];
 
             document.getElementById(`${id}RightLegTotal`).value = rightLeg;
             document.getElementById(`${id}LeftLegTotal`).value = leftLeg;
@@ -101,11 +97,29 @@
                         <tr><td>Left Leg</td><td>5-8</td><td><input type="text" id="${henchmanId}LeftLegTotal" readonly></td><td><input type="number"></td></tr>
                         <tr><td>Abdomen</td><td>9-11</td><td><input type="text" id="${henchmanId}AbdomenTotal" readonly></td><td><input type="number"></td></tr>
                         <tr><td>Chest</td><td>12</td><td><input type="text" id="${henchmanId}ChestTotal" readonly></td><td><input type="number"></td></tr>
+                        <tr><td>Right Arm</td><td>13-15</td><td><input type="text" id="${henchmanId}RightArmTotal" readonly></td><td><input type="number"></td></tr>
+                        <tr><td>Left Arm</td><td>16-18</td><td><input type="text" id="${henchmanId}LeftArmTotal" readonly></td><td><input type="number"></td></tr>
+                        <tr><td>Head</td><td>19-20</td><td><input type="text" id="${henchmanId}HeadTotal" readonly></td><td><input type="number"></td></tr>
                     </tbody>
                 </table>
+                <input type="text" class="weapon-name" placeholder="Weapon 1 Name">
+                <input type="number" class="weapon-hp" placeholder="Weapon 1 HP">
+                <input type="text" class="weapon-name" placeholder="Weapon 2 Name">
+                <input type="number" class="weapon-hp" placeholder="Weapon 2 HP">
+                <input type="text" class="shield-name" placeholder="Shield Name & Size">
+                <input type="number" class="shield-hp" placeholder="Shield HP">
+                <input type="text" class="status" placeholder="Status (e.g., Injured, Severed)">
             </div>`;
             document.getElementById("henchmenContainer").insertAdjacentHTML("beforeend", henchmanTemplate);
+             // Attach event listeners to the newly created elements.
+             const newHenchmanTotalHPInput = document.getElementById(`${henchmanId}TotalHP`);
+             if (newHenchmanTotalHPInput) {
+                newHenchmanTotalHPInput.addEventListener('change', () => calculateHitLocations(henchmanId));
+             }
         }
+
+        // Calculate initial hit locations for the main opponent on page load
+        calculateHitLocations('main');
     </script>
 </body>
 </html>
