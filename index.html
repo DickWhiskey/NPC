@@ -65,14 +65,19 @@
 
     <script>
         function lookupHP(totalHP) {
+            let limbHP = Math.ceil(totalHP * 0.2);
+            let abdomenHP = Math.ceil(totalHP * 0.3);
+            let chestHP = Math.ceil(totalHP * 0.3);
+            let headHP = Math.ceil(totalHP * 0.2);
+
             return {
-                "Right Leg": Math.ceil(totalHP * 0.2),
-                "Left Leg": Math.ceil(totalHP * 0.2),
-                "Abdomen": Math.ceil(totalHP * 0.3),
-                "Chest": Math.ceil(totalHP * 0.3),
-                "Right Arm": Math.ceil(totalHP * 0.2),
-                "Left Arm": Math.ceil(totalHP * 0.2),
-                "Head": Math.ceil(totalHP * 0.2)
+                "Right Leg": limbHP,
+                "Left Leg": limbHP,
+                "Abdomen": abdomenHP,
+                "Chest": chestHP,
+                "Right Arm": limbHP,
+                "Left Arm": limbHP,
+                "Head": headHP
             };
         }
 
