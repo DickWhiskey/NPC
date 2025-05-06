@@ -65,21 +65,21 @@
 
     <script>
         function lookupHP(totalHP) {
-            let limbHP = Math.ceil(totalHP * 0.2);
-            let abdomenHP = Math.ceil(totalHP * 0.3);
-            let chestHP = Math.ceil(totalHP * 0.3);
-            let headHP = Math.ceil(totalHP * 0.2);
+    let coreHP = Math.max(Math.ceil(totalHP / 3), 2);
+    let chestHP = coreHP + 1;
+    let armHP = coreHP - 1;
+    
+    return {
+        "Right Leg": coreHP,
+        "Left Leg": coreHP,
+        "Abdomen": coreHP,
+        "Chest": chestHP,
+        "Right Arm": armHP,
+        "Left Arm": armHP,
+        "Head": coreHP
+    };
+}
 
-            return {
-                "Right Leg": limbHP,
-                "Left Leg": limbHP,
-                "Abdomen": abdomenHP,
-                "Chest": chestHP,
-                "Right Arm": limbHP,
-                "Left Arm": limbHP,
-                "Head": headHP
-            };
-        }
 
         function calculateHitLocations(id) {
             let totalHP = parseInt(document.getElementById(`${id}TotalHP`).value);
