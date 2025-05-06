@@ -24,6 +24,7 @@
     <h2>RuneQuest NPC Combat Tracker</h2>
     
     <div class="tracker-container">
+        <!-- Main Opponent Section -->
         <div class="tracker">
             <input type="text" class="npc-name" placeholder="Main Opponent Name" id="mainOpponent">
             <label for="mainTotalHP"><strong>Total HP:</strong></label>
@@ -63,17 +64,25 @@
     </div>
 
     <script>
+        function lookupHP(totalHP) {
+            return {
+                "Right Leg": Math.ceil(totalHP * 0.2),
+                "Left Leg": Math.ceil(totalHP * 0.2),
+                "Abdomen": Math.ceil(totalHP * 0.3),
+                "Chest": Math.ceil(totalHP * 0.3),
+                "Right Arm": Math.ceil(totalHP * 0.2),
+                "Left Arm": Math.ceil(totalHP * 0.2),
+                "Head": Math.ceil(totalHP * 0.2)
+            };
+        }
+
         function calculateHitLocations(id) {
             let totalHP = parseInt(document.getElementById(`${id}TotalHP`).value);
-            let [rightLeg, leftLeg, abdomen, chest, rightArm, leftArm, head] = [Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.3), Math.floor(totalHP * 0.3), Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.2), Math.floor(totalHP * 0.2)];
+            let hpValues = lookupHP(totalHP);
 
-            document.getElementById(`${id}RightLegTotal`).value = rightLeg;
-            document.getElementById(`${id}LeftLegTotal`).value = leftLeg;
-            document.getElementById(`${id}AbdomenTotal`).value = abdomen;
-            document.getElementById(`${id}ChestTotal`).value = chest;
-            document.getElementById(`${id}RightArmTotal`).value = rightArm;
-            document.getElementById(`${id}LeftArmTotal`).value = leftArm;
-            document.getElementById(`${id}HeadTotal`).value = head;
+            Object.entries(hpValues).forEach(([location, value]) => {
+                document.getElementById(`${id}${location.replace(" ", "")}Total`).value = value;
+            });
         }
 
         function duplicateHenchman() {
@@ -93,13 +102,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Right Leg</td><td>1-4</td><td><input type="text" id="${henchmanId}RightLegTotal" readonly></td><td><input type="number"></td></tr>
-                        <tr><td>Left Leg</td><td>5-8</td><td><input type="text" id="${henchmanId}LeftLegTotal" readonly></td><td><input type="number"></td></tr>
-                        <tr><td>Abdomen</td><td>9-11</td><td><input type="text" id="${henchmanId}AbdomenTotal" readonly></td><td><input type="number"></td></tr>
-                        <tr><td>Chest</td><td>12</td><td><input type="text" id="${henchmanId}ChestTotal" readonly></td><td><input type="number"></td></tr>
-                        <tr><td>Right Arm</td><td>13-15</td><td><input type="text" id="${henchmanId}RightArmTotal" readonly></td><td><input type="number"></td></tr>
-                        <tr><td>Left Arm</td><td>16-18</td><td><input type="text" id="${henchmanId}LeftArmTotal" readonly></td><td><input type="number"></td></tr>
-                        <tr><td>Head</td><td>19-20</td><td><input type="text" id="${henchmanId}HeadTotal" readonly></td><td><input type="number"></td></tr>
+                        ${Object.keys(lookupHP(10)).map(location => `
+                        <tr>
+                            <td>${location}</td>
+                            <td>-</td>
+                            <td><input type="text" id="${henchmanId}${location.replace(" ", "")}Total" readonly></td>
+                            <td><input type="number"></td>
+                        </tr>`).join("")}
                     </tbody>
                 </table>
                 <input type="text" class="weapon-name" placeholder="Weapon 1 Name">
@@ -111,15 +120,8 @@
                 <input type="text" class="status" placeholder="Status (e.g., Injured, Severed)">
             </div>`;
             document.getElementById("henchmenContainer").insertAdjacentHTML("beforeend", henchmanTemplate);
-             // Attach event listeners to the newly created elements.
-             const newHenchmanTotalHPInput = document.getElementById(`${henchmanId}TotalHP`);
-             if (newHenchmanTotalHPInput) {
-                newHenchmanTotalHPInput.addEventListener('change', () => calculateHitLocations(henchmanId));
-             }
+            calculateHitLocations(henchmanId);
         }
-
-        // Calculate initial hit locations for the main opponent on page load
-        calculateHitLocations('main');
     </script>
 </body>
 </html>
