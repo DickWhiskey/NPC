@@ -6,15 +6,15 @@
     <title>RuneQuest NPC Combat Tracker</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: black; color: white; text-align: center; }
-        h2 { text-align: center; } /* Centers the title */
-        .tracker-container { display: flex; justify-content: space-between; flex-wrap: wrap; }
-        .tracker { width: 22%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background-color: #222; text-align: center; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th, td { padding: 6px; text-align: center; border-bottom: 1px solid #555; }
+        h2 { text-align: center; }
+        .tracker-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; justify-content: center; }
+        .tracker { width: 48%; padding: 8px; border: 1px solid #ccc; border-radius: 8px; background-color: #222; text-align: center; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 4px; text-align: center; border-bottom: 1px solid #555; }
         th { background-color: #444; }
-        input { width: 50px; padding: 5px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
-        .npc-name { width: 80%; padding: 5px; background-color: #333; color: white; border: 1px solid #555; text-align: center; margin-bottom: 8px; }
-        .status { width: 100%; padding: 5px; background-color: #444; color: white; border: 1px solid #555; text-align: center; margin-top: 5px; }
+        input { width: 40px; padding: 4px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
+        .npc-name { width: 90%; padding: 4px; background-color: #333; color: white; border: 1px solid #555; text-align: center; margin-bottom: 5px; }
+        .status { width: 100%; padding: 4px; background-color: #444; color: white; border: 1px solid #555; text-align: center; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -32,6 +32,7 @@
                         <thead>
                             <tr>
                                 <th>Location</th>
+                                <th>Roll</th>
                                 <th>Total HP</th>
                                 <th>Current HP</th>
                             </tr>
@@ -39,36 +40,43 @@
                         <tbody>
                             <tr>
                                 <td>Head</td>
+                                <td>19-20</td>
                                 <td><input type="text" id="headTotal${id}" readonly></td>
                                 <td><input type="number" id="headCurrent${id}"></td>
                             </tr>
                             <tr>
                                 <td>Chest</td>
+                                <td>12</td>
                                 <td><input type="text" id="chestTotal${id}" readonly></td>
                                 <td><input type="number" id="chestCurrent${id}"></td>
                             </tr>
                             <tr>
                                 <td>Abdomen</td>
+                                <td>13-15</td>
                                 <td><input type="text" id="abdomenTotal${id}" readonly></td>
                                 <td><input type="number" id="abdomenCurrent${id}"></td>
                             </tr>
                             <tr>
                                 <td>Left Arm</td>
+                                <td>6-8</td>
                                 <td><input type="text" id="leftArmTotal${id}" readonly></td>
                                 <td><input type="number" id="leftArmCurrent${id}"></td>
                             </tr>
                             <tr>
                                 <td>Right Arm</td>
+                                <td>9-11</td>
                                 <td><input type="text" id="rightArmTotal${id}" readonly></td>
                                 <td><input type="number" id="rightArmCurrent${id}"></td>
                             </tr>
                             <tr>
                                 <td>Left Leg</td>
+                                <td>1-2</td>
                                 <td><input type="text" id="leftLegTotal${id}" readonly></td>
                                 <td><input type="number" id="leftLegCurrent${id}"></td>
                             </tr>
                             <tr>
                                 <td>Right Leg</td>
+                                <td>3-5</td>
                                 <td><input type="text" id="rightLegTotal${id}" readonly></td>
                                 <td><input type="number" id="rightLegCurrent${id}"></td>
                             </tr>
