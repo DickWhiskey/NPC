@@ -7,8 +7,21 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 5px; background-color: black; color: white; text-align: center; }
         h2 { text-align: center; }
-        .tracker-container { display: grid; grid-template-columns: repeat(2, min-content); gap: 5px; justify-content: center; }
-        .tracker { width: auto; padding: 5px; border: 1px solid #ccc; border-radius: 8px; background-color: #222; text-align: center; margin: 0px; }
+        .tracker-container { 
+            display: grid; 
+            grid-template-columns: repeat(4, min-content); 
+            gap: 5px; 
+            justify-content: center; 
+        }
+        .tracker { 
+            width: auto; 
+            padding: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            background-color: #222; 
+            text-align: center; 
+            margin: 0px; 
+        }
         table { width: auto; border-collapse: collapse; font-size: 11px; }
         th, td { padding: 2px; text-align: center; border-bottom: 1px solid #555; }
         th { background-color: #444; }
@@ -86,7 +99,9 @@
                 </div>`;
             }
 
-            document.write(generateNPC(1) + generateNPC(2) + generateNPC(3) + generateNPC(4));
+            for (let i = 1; i <= 16; i++) {
+                document.write(generateNPC(i));
+            }
 
             function calculateHitLocations(id) {
                 let totalHP = parseInt(document.getElementById(`totalHP${id}`).value);
@@ -113,10 +128,9 @@
             }
 
             window.onload = function () {
-                calculateHitLocations(1);
-                calculateHitLocations(2);
-                calculateHitLocations(3);
-                calculateHitLocations(4);
+                for (let i = 1; i <= 16; i++) {
+                    calculateHitLocations(i);
+                }
             };
         </script>
     </div>
