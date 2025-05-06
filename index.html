@@ -7,13 +7,13 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 5px; background-color: black; color: white; text-align: center; }
         h2 { text-align: center; }
-        .tracker-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 0px; }
-        .tracker { width: 49%; padding: 5px; border: 1px solid #ccc; border-radius: 8px; background-color: #222; text-align: center; margin: 0px; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .tracker-container { display: grid; grid-template-columns: repeat(2, min-content); gap: 5px; justify-content: center; }
+        .tracker { width: auto; padding: 5px; border: 1px solid #ccc; border-radius: 8px; background-color: #222; text-align: center; margin: 0px; }
+        table { width: auto; border-collapse: collapse; font-size: 11px; }
         th, td { padding: 2px; text-align: center; border-bottom: 1px solid #555; }
         th { background-color: #444; }
-        input { width: 35px; padding: 2px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
-        .npc-name { width: 90%; padding: 3px; background-color: #333; color: white; border: 1px solid #555; text-align: center; margin-bottom: 3px; }
+        input { width: 30px; padding: 2px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
+        .npc-name { width: 75%; padding: 3px; background-color: #333; color: white; border: 1px solid #555; text-align: center; margin-bottom: 3px; }
         .status { width: 100%; padding: 2px; background-color: #444; color: white; border: 1px solid #555; text-align: center; margin-top: 3px; }
     </style>
 </head>
