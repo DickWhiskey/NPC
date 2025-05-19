@@ -1,132 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuneQuest NPC Combat Tracker</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 5px; background-color: black; color: white; text-align: center; }
-        h2, h3 { font-variant: small-caps; letter-spacing: 1px; margin-bottom: 10px; }
-        .tracker-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .tracker { width: 40%; padding: 10px; border: 2px solid #888; border-radius: 8px; background-color: #222; text-align: center; margin-bottom: 15px; }
-        .henchmen-container { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
-        .henchmen { width: 30%; padding: 5px; border: 1px solid #555; border-radius: 6px; background-color: #333; text-align: center; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th, td { padding: 4px; text-align: center; border-bottom: 1px solid #666; }
-        th { background-color: #444; }
-        input { width: 80px; padding: 3px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
-        .npc-name { width: 90%; padding: 4px; background-color: #444; color: white; border: 2px solid #999; text-align: center; margin-bottom: 3px; }
-        .status, .weapon-name, .weapon-hp, .shield-name, .shield-hp { width: 48%; padding: 3px; background-color: #555; color: white; border: 1px solid #777; text-align: center; display: inline-block; margin-top: 3px; }
-        .duplicate-btn { margin-top: 5px; padding: 6px 12px; background-color: #888; color: black; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <h2>RuneQuest NPC Combat Tracker</h2>
-    
-    <div class="tracker-container">
-        <!-- Main Opponent Section -->
-        <div class="tracker">
-            <input type="text" class="npc-name" placeholder="Main Opponent Name" id="mainOpponent">
-            <label for="mainTotalHP"><strong>Total HP:</strong></label>
-            <input type="number" id="mainTotalHP" value="10" onchange="calculateHitLocations('main')">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RuneQuest NPC Generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Location</th>
-                        <th>Roll</th>
-                        <th>Total HP</th>
-                        <th>Current HP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Right Leg</td><td>1-4</td><td><input type="text" id="mainRightLegTotal" readonly></td><td><input type="number"></td></tr>
-                    <tr><td>Left Leg</td><td>5-8</td><td><input type="text" id="mainLeftLegTotal" readonly></td><td><input type="number"></td></tr>
-                    <tr><td>Abdomen</td><td>9-11</td><td><input type="text" id="mainAbdomenTotal" readonly></td><td><input type="number"></td></tr>
-                    <tr><td>Chest</td><td>12</td><td><input type="text" id="mainChestTotal" readonly></td><td><input type="number"></td></tr>
-                    <tr><td>Right Arm</td><td>13-15</td><td><input type="text" id="mainRightArmTotal" readonly></td><td><input type="number"></td></tr>
-                    <tr><td>Left Arm</td><td>16-18</td><td><input type="text" id="mainLeftArmTotal" readonly></td><td><input type="number"></td></tr>
-                    <tr><td>Head</td><td>19-20</td><td><input type="text" id="mainHeadTotal" readonly></td><td><input type="number"></td></tr>
-                </tbody>
-            </table>
-            <input type="text" class="weapon-name" placeholder="Weapon 1 Name">
-            <input type="number" class="weapon-hp" placeholder="Weapon 1 HP">
-            <input type="text" class="weapon-name" placeholder="Weapon 2 Name">
-            <input type="number" class="weapon-hp" placeholder="Weapon 2 HP">
-            <input type="text" class="shield-name" placeholder="Shield Name & Size">
-            <input type="number" class="shield-hp" placeholder="Shield HP">
-            <input type="text" class="status" placeholder="Status (e.g., Injured, Severed)">
-        </div>
+    .container {
+      background-color: #1e1e1e;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
 
-        <h3>Henchmen</h3>
-        <button class="duplicate-btn" onclick="duplicateHenchman()">Add Henchman</button>
-        <div class="henchmen-container" id="henchmenContainer"></div>
-    </div>
+    h1 {
+      margin-bottom: 1em;
+      color: #ffffff;
+    }
 
-    <script>
-        function lookupHP(totalHP) {
-    let coreHP = Math.max(Math.ceil(totalHP / 3), 2);
-    let chestHP = coreHP + 1;
-    let armHP = coreHP - 1;
-    
-    return {
-        "Right Leg": coreHP,
-        "Left Leg": coreHP,
-        "Abdomen": coreHP,
-        "Chest": chestHP,
-        "Right Arm": armHP,
-        "Left Arm": armHP,
-        "Head": coreHP
-    };
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.25em;
+      color: #cccccc;
+    }
+
+    input[type="number"] {
+  width: 100px;
+  padding: 0.6em;
+  font-size: 1em;
+  margin: 0.5em auto 1em;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  display: block;
+  text-align: center;
 }
 
+    button {
+      width: 100%;
+      padding: 0.75em;
+      font-size: 1em;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
 
-        function calculateHitLocations(id) {
-            let totalHP = parseInt(document.getElementById(`${id}TotalHP`).value);
-            let hpValues = lookupHP(totalHP);
+    button:hover {
+      background-color: #005fa3;
+    }
 
-            Object.entries(hpValues).forEach(([location, value]) => {
-                document.getElementById(`${id}${location.replace(" ", "")}Total`).value = value;
-            });
-        }
+    .output {
+      margin-top: 2em;
+      background: #2b2b2b;
+      padding: 1.5em;
+      border-radius: 10px;
+      text-align: left;
+    }
 
-        function duplicateHenchman() {
-            let henchmanId = `henchman${document.getElementsByClassName("henchmen").length + 1}`;
-            let henchmanTemplate = `
-            <div class="henchmen">
-                <input type="text" class="npc-name" placeholder="Henchman Name">
-                <label><strong>Total HP:</strong></label>
-                <input type="number" id="${henchmanId}TotalHP" value="10" onchange="calculateHitLocations('${henchmanId}')">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Location</th>
-                            <th>Roll</th>
-                            <th>Total HP</th>
-                            <th>Current HP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${Object.keys(lookupHP(10)).map(location => `
-                        <tr>
-                            <td>${location}</td>
-                            <td>-</td>
-                            <td><input type="text" id="${henchmanId}${location.replace(" ", "")}Total" readonly></td>
-                            <td><input type="number"></td>
-                        </tr>`).join("")}
-                    </tbody>
-                </table>
-                <input type="text" class="weapon-name" placeholder="Weapon 1 Name">
-                <input type="number" class="weapon-hp" placeholder="Weapon 1 HP">
-                <input type="text" class="weapon-name" placeholder="Weapon 2 Name">
-                <input type="number" class="weapon-hp" placeholder="Weapon 2 HP">
-                <input type="text" class="shield-name" placeholder="Shield Name & Size">
-                <input type="number" class="shield-hp" placeholder="Shield HP">
-                <input type="text" class="status" placeholder="Status (e.g., Injured, Severed)">
-            </div>`;
-            document.getElementById("henchmenContainer").insertAdjacentHTML("beforeend", henchmanTemplate);
-            calculateHitLocations(henchmanId);
-        }
-    </script>
+    .output h2 {
+      margin-top: 0;
+      color: #00bfff;
+    }
+
+    .output p {
+      margin: 0.5em 0;
+      line-height: 1.4;
+    }
+
+    .section-title {
+      margin-top: 1em;
+      font-weight: bold;
+      color: #cccccc;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.25em;
+      margin-bottom: 0.5em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>RuneQuest NPC Generator</h1>
+    <label for="cr">Enter Character Rating (CR 0–10):</label>
+    <input type="number" id="cr" min="0" max="10" value="4" />
+    <button onclick="generateNPC()">Generate NPC</button>
+
+    <div class="output" id="npcOutput"></div>
+  </div>
+
+  <script>
+    function generateNPC() {
+      const cr = parseInt(document.getElementById("cr").value);
+      if (isNaN(cr) || cr < 0 || cr > 10) {
+        alert("Please enter a CR between 0 and 10.");
+        return;
+      }
+
+      const characteristic = 10 + cr;
+      const totalHP = characteristic;
+      const baseSkill = 20 + (cr * 10);
+      const perLocHP = Math.ceil(totalHP / 3);
+      const hpChest = perLocHP + 1;
+      const hpArms = perLocHP - 1;
+      const hpOther = perLocHP;
+      const strikeRank = 5 - Math.floor((cr - 1) / 2);
+      const damageBonus = cr <= 5 ? "1D4" : "1D6";
+      const magicPoints = cr;
+
+      const npcHTML = `
+        <h2>NPC (CR ${cr})</h2>
+        <p><strong>Characteristic Scores:</strong> ${characteristic} in all stats</p>
+        <p><strong>Total Hit Points:</strong> ${totalHP}</p>
+
+        <div class="section-title">Hit Points by Location</div>
+        <p>Legs: ${hpOther} HP</p>
+        <p>Abdomen: ${hpOther} HP</p>
+        <p>Chest: ${hpChest} HP</p>
+        <p>Arms: ${hpArms} HP</p>
+        <p>Head: ${hpOther} HP</p>
+
+        <div class="section-title">Combat & Abilities</div>
+        <p><strong>Strike Rank:</strong> ${strikeRank}</p>
+        <p><strong>Damage Bonus:</strong> +${damageBonus}</p>
+        <p><strong>Key Skills:</strong> ~${baseSkill}%</p>
+        <p><strong>Magic Points:</strong> ${magicPoints} (Spirit or Rune)</p>
+      `;
+
+      document.getElementById("npcOutput").innerHTML = npcHTML;
+    }
+  </script>
 </body>
 </html>
